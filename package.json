@@ -1,0 +1,7 @@
+{
+    "name": "craft-bank-passbook",
+    "version": "1.0.0",
+    "private": true,
+    "description": "A craft beer bank passbooks.",
+    "main": "src/index.js"
+}
