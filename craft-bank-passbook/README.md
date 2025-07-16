@@ -1,6 +1,5 @@
-# Turborepo starter
-
-This Turborepo starter is maintained by the Turborepo core team.
+# craft-bank-passbook
+わくわくするようなビール体験を
 
 ## Using this example
 
