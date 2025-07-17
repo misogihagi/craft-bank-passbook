@@ -74,7 +74,7 @@ export async function requestPrint(
 
 function getJobCatalog(db: BetterSQLite3Database<typeof schema>) {
   return db
-    .select({ displayName: usersTable.nickname, date: jobsTable.date })
+    .select({ nickname: usersTable.nickname, date: jobsTable.date })
     .from(jobsTable)
     .leftJoin(usersTable, eq(usersTable.id, jobsTable.userId));
 }
