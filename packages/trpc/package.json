@@ -11,7 +11,8 @@
     "@repo/models": "workspace:*",
     "@repo/usecases": "workspace:*",
     "@trpc/server": "^11.4.3",
-    "drizzle-orm": "^0.44.3"
+    "drizzle-orm": "^0.44.3",
+    "jose": "^6.0.12"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
