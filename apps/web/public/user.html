@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile - Beer Journey</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#D97706",
+              secondary: "#F59E0B",
+            },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      :where([class^="ri-"])::before {
+        content: "\f3c2";
+      }
+    </style>
+  </head>
+  <body class="bg-white">
+    <div class="w-full max-w-sm mx-auto bg-white min-h-screen">
+      <header
+        class="fixed top-0 w-full max-w-sm bg-white border-b border-gray-100 z-50"
+      >
+        <div class="flex items-center justify-between px-4 py-3">
+          <a
+            href="https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/57239c27-6154-41d7-a7ff-a43a6140ce45"
+            data-readdy="true"
+            class="w-8 h-8 flex items-center justify-center cursor-pointer"
+          >
+            <i class="ri-arrow-left-line text-gray-600 ri-lg"></i>
+          </a>
+          <h1 class="text-lg font-semibold text-gray-900">Edit Profile</h1>
+          <button
+            id="save-button"
+            class="text-primary font-medium cursor-pointer !rounded-button"
+          >
+            Save
+          </button>
+        </div>
+      </header>
+
+      <main class="pt-16 pb-8 px-4">
+        <section class="text-center py-6 mb-6">
+          <div class="relative w-24 h-24 mx-auto mb-4">
+            <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-100">
+              <img
+                id="profile-image"
+                src="https://readdy.ai/api/search-image?query=Professional%20headshot%20portrait%20of%20a%20friendly%20craft%20beer%20enthusiast%2C%20smiling%20person%20with%20casual%20style%2C%20warm%20lighting%2C%20high%20quality%20photography%2C%20natural%20expression%2C%20modern%20portrait%20style&width=96&height=96&seq=profile-avatar&orientation=squarish"
+                alt="Profile Avatar"
+                class="w-full h-full object-cover object-top"
+              />
+            </div>
+            <button
+              id="photo-edit-button"
+              class="absolute -bottom-1 -right-1 w-8 h-8 bg-primary rounded-full flex items-center justify-center cursor-pointer shadow-lg"
+            >
+              <i class="ri-camera-line text-white ri-sm"></i>
+            </button>
+          </div>
+          <input type="file" id="photo-input" accept="image/*" class="hidden" />
+          <button
+            id="change-photo-button"
+            class="text-primary text-sm font-medium cursor-pointer"
+          >
+            Change Photo
+          </button>
+        </section>
+
+        <form class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-900 mb-2"
+              >Full Name</label
+            >
+            <input
+              type="text"
+              id="full-name"
+              value="Marcus Thompson"
+              class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-900 mb-2"
+              >Username</label
+            >
+            <input
+              type="text"
+              id="username"
+              value="@marcus_hops"
+              class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-900 mb-2"
+              >Bio</label
+            >
+            <textarea
+              id="bio"
+              rows="4"
+              class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white resize-none"
+              placeholder="Tell us about your beer journey..."
+            >
+Craft beer enthusiast exploring flavors from around the world. Always on the hunt for the perfect IPA and love discovering hidden gem breweries. Cheers to new adventures! 🍺</textarea
+            >
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-900 mb-2"
+              >Email</label
+            >
+            <input
+              type="email"
+              id="email"
+              value="marcus.thompson@email.com"
+              class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white"
+            />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-900 mb-2"
+              >Location</label
+            >
+            <input
+              type="text"
+              id="location"
+              value="Portland, Oregon"
+              class="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white"
+            />
+          </div>
+
+          <div class="bg-gray-50 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-900"
+                >Member Since</span
+              >
+              <span class="text-sm text-gray-600">March 2023</span>
+            </div>
+          </div>
+        </form>
+
+        <section class="mt-8">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Privacy Settings
+          </h3>
+          <div class="space-y-4">
+            <div
+              class="flex items-center justify-between bg-gray-50 rounded-lg p-4"
+            >
+              <div>
+                <div class="font-medium text-gray-900">Profile Visibility</div>
+                <div class="text-sm text-gray-500">
+                  Make your profile visible to other users
+                </div>
+              </div>
+              <div class="relative">
+                <input
+                  type="checkbox"
+                  id="profile-visibility"
+                  class="sr-only"
+                  checked
+                />
+                <label
+                  for="profile-visibility"
+                  class="flex items-center cursor-pointer"
+                >
+                  <div
+                    class="w-11 h-6 bg-primary rounded-full shadow-inner relative"
+                  >
+                    <div
+                      class="w-4 h-4 bg-white rounded-full shadow absolute top-1 right-1 transition-transform duration-200"
+                    ></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center justify-between bg-gray-50 rounded-lg p-4"
+            >
+              <div>
+                <div class="font-medium text-gray-900">Activity Sharing</div>
+                <div class="text-sm text-gray-500">
+                  Share your beer activities with friends
+                </div>
+              </div>
+              <div class="relative">
+                <input
+                  type="checkbox"
+                  id="activity-sharing"
+                  class="sr-only"
+                  checked
+                />
+                <label
+                  for="activity-sharing"
+                  class="flex items-center cursor-pointer"
+                >
+                  <div
+                    class="w-11 h-6 bg-primary rounded-full shadow-inner relative"
+                  >
+                    <div
+                      class="w-4 h-4 bg-white rounded-full shadow absolute top-1 right-1 transition-transform duration-200"
+                    ></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center justify-between bg-gray-50 rounded-lg p-4"
+            >
+              <div>
+                <div class="font-medium text-gray-900">Email Notifications</div>
+                <div class="text-sm text-gray-500">
+                  Receive updates about your beer journey
+                </div>
+              </div>
+              <div class="relative">
+                <input
+                  type="checkbox"
+                  id="email-notifications"
+                  class="sr-only"
+                />
+                <label
+                  for="email-notifications"
+                  class="flex items-center cursor-pointer"
+                >
+                  <div
+                    class="w-11 h-6 bg-gray-300 rounded-full shadow-inner relative"
+                  >
+                    <div
+                      class="w-4 h-4 bg-white rounded-full shadow absolute top-1 left-1 transition-transform duration-200"
+                    ></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="mt-8 space-y-4">
+          <button
+            id="save-changes-button"
+            class="w-full bg-primary text-white py-3 rounded-button font-medium cursor-pointer !rounded-button"
+          >
+            Save Changes
+          </button>
+          <a
+            href="https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/57239c27-6154-41d7-a7ff-a43a6140ce45"
+            data-readdy="true"
+            class="block w-full text-center text-gray-600 py-3 cursor-pointer"
+          >
+            Cancel
+          </a>
+        </div>
+      </main>
+    </div>
+
+    <div
+      id="loading-overlay"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+        <div
+          class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"
+        ></div>
+        <span class="text-gray-900">Saving changes...</span>
+      </div>
+    </div>
+
+    <script id="photo-upload-handler">
+      document.addEventListener("DOMContentLoaded", function () {
+        const photoEditButton = document.getElementById("photo-edit-button");
+        const changePhotoButton = document.getElementById(
+          "change-photo-button"
+        );
+        const photoInput = document.getElementById("photo-input");
+        const profileImage = document.getElementById("profile-image");
+
+        function triggerPhotoUpload() {
+          photoInput.click();
+        }
+
+        photoEditButton.addEventListener("click", triggerPhotoUpload);
+        changePhotoButton.addEventListener("click", triggerPhotoUpload);
+        photoInput.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              profileImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      });
+    </script>
+
+    <script id="toggle-switches">
+      document.addEventListener("DOMContentLoaded", function () {
+        const toggles = [
+          "profile-visibility",
+          "activity-sharing",
+          "email-notifications",
+        ];
+        toggles.forEach((toggleId) => {
+          const toggle = document.getElementById(toggleId);
+          const label = toggle.nextElementSibling;
+          const slider = label.querySelector("div > div");
+          const background = label.querySelector("div");
+
+          function updateToggleState() {
+            if (toggle.checked) {
+              background.classList.remove("bg-gray-300");
+              background.classList.add("bg-primary");
+              slider.classList.remove("left-1");
+              slider.classList.add("right-1");
+            } else {
+              background.classList.remove("bg-primary");
+              background.classList.add("bg-gray-300");
+              slider.classList.remove("right-1");
+              slider.classList.add("left-1");
+            }
+          }
+
+          toggle.addEventListener("change", updateToggleState);
+          updateToggleState();
+        });
+      });
+    </script>
+
+    <script id="form-validation">
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const inputs = form.querySelectorAll("input, textarea");
+        const saveButton = document.getElementById("save-button");
+        const saveChangesButton = document.getElementById(
+          "save-changes-button"
+        );
+        const loadingOverlay = document.getElementById("loading-overlay");
+        function validateForm() {
+          let isValid = true;
+          inputs.forEach((input) => {
+            if (input.type === "email") {
+              const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              if (!emailRegex.test(input.value)) {
+                isValid = false;
+                input.classList.add("ring-red-500");
+              } else {
+                input.classList.remove("ring-red-500");
+              }
+            } else if (input.required && !input.value.trim()) {
+              isValid = false;
+              input.classList.add("ring-red-500");
+            } else {
+              input.classList.remove("ring-red-500");
+            }
+          });
+          return isValid;
+        }
+
+        function saveChanges() {
+          if (validateForm()) {
+            loadingOverlay.classList.remove("hidden");
+            setTimeout(() => {
+              loadingOverlay.classList.add("hidden");
+              window.location.href =
+                "https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/57239c27-6154-41d7-a7ff-a43a6140ce45";
+            }, 1500);
+          }
+        }
+
+        saveButton.addEventListener("click", saveChanges);
+        saveChangesButton.addEventListener("click", saveChanges);
+
+        inputs.forEach((input) => {
+          input.addEventListener("blur", validateForm);
+        });
+      });
+    </script>
+
+    <script id="form-interactions">
+      document.addEventListener("DOMContentLoaded", function () {
+        const inputs = document.querySelectorAll("input, textarea");
+
+        inputs.forEach((input) => {
+          input.addEventListener("focus", function () {
+            this.classList.add("ring-2", "ring-primary", "bg-white");
+            this.classList.remove("bg-gray-50");
+          });
+
+          input.addEventListener("blur", function () {
+            if (!this.value) {
+              this.classList.remove("ring-2", "ring-primary", "bg-white");
+              this.classList.add("bg-gray-50");
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
