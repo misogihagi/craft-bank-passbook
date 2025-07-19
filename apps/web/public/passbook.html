@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Craft Beer Passbook</title>
+<script src="https://cdn.tailwindcss.com/3.4.16">
+</script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: { primary: "#8B4513", secondary: "#D2691E" },
+      borderRadius: {
+        none: "0px",
+        sm: "4px",
+        DEFAULT: "8px",
+        md: "12px",
+        lg: "16px",
+        xl: "20px",
+        "2xl": "24px",
+        "3xl": "32px",
+        full: "9999px",
+        button: "8px",
+      },
+    },
+  },
+};
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css" rel="stylesheet">
+<style>
+:where([class^="ri-"])::before { content: "\f3c2"; }
+.leather-texture {
+background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #8B4513 100%);
+position: relative;
+}
+.leather-texture::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.1"/></svg>');
+pointer-events: none;
+}
+.page-texture {
+background: linear-gradient(135deg, #FFF8DC 0%, #F5F5DC 100%);
+position: relative;
+}
+.page-texture::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="paper"><feTurbulence baseFrequency="0.04" numOctaves="3" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23paper)" opacity="0.05"/></svg>');
+pointer-events: none;
+}
+.handwriting {
+font-family: 'Courier New', monospace;
+font-style: italic;
+}
+.stamp-effect {
+border: 2px dashed #8B4513;
+position: relative;
+}
+.stamp-effect::after {
+content: '';
+position: absolute;
+top: -2px;
+left: -2px;
+right: -2px;
+bottom: -2px;
+border: 1px solid #8B4513;
+border-radius: 4px;
+}
+</style>
+</head>
+<body class="bg-amber-50 font-sans">
+<nav class="fixed top-0 w-full bg-white/90 backdrop-blur-sm border-b border-amber-200 z-50">
+<div class="flex items-center justify-between px-4 py-3">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 flex items-center justify-center">
+<i class="ri-book-2-line text-primary text-xl"></i>
+</div>
+<h1 class="font-['Pacifico'] text-xl text-primary">Craft Beer Passbook</h1>
+</div>
+<div class="w-8 h-8 flex items-center justify-center cursor-pointer">
+<i class="ri-notification-2-line text-gray-600 text-xl"></i>
+</div>
+</div>
+</nav>
+<main class="pt-16 pb-20">
+<div class="flex items-center justify-between px-4 mt-4 mb-2">
+<div class="flex items-center space-x-2">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-book-2-line text-primary"></i>
+</div>
+<h2 class="text-lg font-semibold text-gray-800">Beer Log</h2>
+</div>
+<div class="flex items-center space-x-2">
+<button class="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-full">
+<i class="ri-search-line"></i>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded-full">
+<i class="ri-filter-3-line"></i>
+</button>
+</div>
+</div>
+<div class="leather-texture mx-4 rounded-xl shadow-2xl overflow-hidden">
+<div class="p-6 text-center">
+<div class="text-white mb-4">
+<h2 class="text-2xl font-bold mb-2">Welcome Back, Alex!</h2>
+<p class="text-amber-100">Your beer journey continues...</p>
+</div>
+<div class="bg-white/20 backdrop-blur-sm rounded-lg p-4 mb-4">
+<div class="text-white text-center">
+<div class="text-3xl font-bold">127</div>
+<div class="text-sm text-amber-100">Unique Beers Collected</div>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-3 text-white text-sm">
+<div class="bg-white/10 rounded-lg p-3">
+<div class="font-bold">23</div>
+<div class="text-amber-100">This Month</div>
+</div>
+<div class="bg-white/10 rounded-lg p-3">
+<div class="font-bold">8</div>
+<div class="text-amber-100">Breweries</div>
+</div>
+<div class="bg-white/10 rounded-lg p-3">
+<div class="font-bold">15</div>
+<div class="text-amber-100">Cities</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 mt-6">
+<div class="page-texture rounded-xl overflow-hidden shadow-lg border border-amber-200">
+<div class="border-b border-amber-200 px-4 py-3 bg-amber-50/50">
+<div class="flex items-center justify-between">
+<div class="text-sm font-medium text-gray-600">July 2025</div>
+<div class="flex items-center space-x-2 text-xs text-gray-500">
+<span>Total: 8 Entries</span>
+</div>
+</div>
+</div>
+<div class="divide-y divide-amber-100">
+<div class="px-4 py-3 bg-white hover:bg-amber-50/30 transition-colors">
+<div class="flex items-start space-x-4">
+<img src="https://readdy.ai/api/search-image?query=craft%20beer%20bottle%20IPA%20golden%20amber%20color%20isolated%20on%20white%20background%20product%20photography%20style%20high%20quality%20detailed&width=80&height=80&seq=beer1&orientation=squarish"
+alt="Beer" class="w-16 h-16 rounded-lg object-cover">
+<div class="flex-1">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-semibold text-gray-800">Hoppy Trails IPA</h4>
+<div class="stamp-effect px-2 py-1 bg-primary/10 rounded">
+<span class="text-xs text-primary font-bold">★★★★★</span>
+</div>
+</div>
+<p class="text-sm text-gray-600 mb-2">Mountain Brew Co. • Portland, OR</p>
+<p class="handwriting text-sm text-gray-700 italic">"Perfect balance of citrus and pine. Shared with Emma at the rooftop bar - amazing sunset!"</p>
+<div class="flex items-center justify-between mt-3">
+<span class="text-xs text-gray-500">Dec 15, 2024</span>
+<div class="flex space-x-2">
+<span class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">IPA</span>
+<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Friends</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 py-3 bg-white hover:bg-amber-50/30 transition-colors">
+<div class="flex items-start space-x-4">
+<img src="https://readdy.ai/api/search-image?query=dark%20stout%20beer%20bottle%20black%20creamy%20foam%20isolated%20on%20white%20background%20product%20photography%20style%20high%20quality%20detailed&width=80&height=80&seq=beer2&orientation=squarish"
+alt="Beer" class="w-16 h-16 rounded-lg object-cover">
+<div class="flex-1">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-semibold text-gray-800">Midnight Velvet Stout</h4>
+<div class="stamp-effect px-2 py-1 bg-primary/10 rounded">
+<span class="text-xs text-primary font-bold">★★★★☆</span>
+</div>
+</div>
+<p class="text-sm text-gray-600 mb-2">Riverside Brewing • Denver, CO</p>
+<p class="handwriting text-sm text-gray-700 italic">"Rich chocolate notes with coffee undertones. Perfect for this snowy evening by the fireplace."</p>
+<div class="flex items-center justify-between mt-3">
+<span class="text-xs text-gray-500">Dec 12, 2024</span>
+<div class="flex space-x-2">
+<span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded-full">Stout</span>
+<span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">Solo</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 py-3 bg-white hover:bg-amber-50/30 transition-colors">
+<div class="flex items-start space-x-4">
+<img src="https://readdy.ai/api/search-image?query=wheat%20beer%20bottle%20light%20golden%20color%20with%20orange%20slice%20isolated%20on%20white%20background%20product%20photography%20style%20high%20quality%20detailed&width=80&height=80&seq=beer3&orientation=squarish"
+alt="Beer" class="w-16 h-16 rounded-lg object-cover">
+<div class="flex-1">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-semibold text-gray-800">Sunset Wheat</h4>
+<div class="stamp-effect px-2 py-1 bg-primary/10 rounded">
+<span class="text-xs text-primary font-bold">★★★☆☆</span>
+</div>
+</div>
+<p class="text-sm text-gray-600 mb-2">Coastal Craft • San Diego, CA</p>
+<p class="handwriting text-sm text-gray-700 italic">"Light and refreshing with hints of orange. Great beach beer during our weekend getaway."</p>
+<div class="flex items-center justify-between mt-3">
+<span class="text-xs text-gray-500">Dec 8, 2024</span>
+<div class="flex space-x-2">
+<span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Wheat</span>
+<span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Travel</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="page-texture rounded-xl overflow-hidden shadow-lg border border-amber-200 mt-4">
+<div class="border-b border-amber-200 px-4 py-3 bg-amber-50/50">
+<div class="flex items-center justify-between">
+<div class="text-sm font-medium text-gray-600">June 2025</div>
+<div class="flex items-center space-x-2 text-xs text-gray-500">
+<span>Total: 12 Entries</span>
+</div>
+</div>
+</div>
+<div class="divide-y divide-amber-100">
+<div class="px-4 py-3 bg-white hover:bg-amber-50/30 transition-colors">
+<div class="flex items-start space-x-4">
+<img src="https://readdy.ai/api/search-image?query=belgian%20ale%20beer%20bottle%20rich%20amber%20color%20isolated%20on%20white%20background%20product%20photography%20style%20high%20quality%20detailed&width=80&height=80&seq=beer4&orientation=squarish"
+alt="Beer" class="w-16 h-16 rounded-lg object-cover">
+<div class="flex-1">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-semibold text-gray-800">Belgian Bliss</h4>
+<div class="stamp-effect px-2 py-1 bg-primary/10 rounded">
+<span class="text-xs text-primary font-bold">★★★★★</span>
+</div>
+</div>
+<p class="text-sm text-gray-600 mb-2">Abbey Brewing • Brussels, BE</p>
+<p class="handwriting text-sm text-gray-700 italic">"Complex fruity notes with a spicy finish. A true Belgian masterpiece!"</p>
+<div class="flex items-center justify-between mt-3">
+<span class="text-xs text-gray-500">Jun 28, 2025</span>
+<div class="flex space-x-2">
+<span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">Belgian</span>
+<span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">Special</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 py-3 bg-white hover:bg-amber-50/30 transition-colors">
+<div class="flex items-start space-x-4">
+<img src="https://readdy.ai/api/search-image?query=pilsner%20beer%20bottle%20crystal%20clear%20golden%20color%20isolated%20on%20white%20background%20product%20photography%20style%20high%20quality%20detailed&width=80&height=80&seq=beer5&orientation=squarish"
+alt="Beer" class="w-16 h-16 rounded-lg object-cover">
+<div class="flex-1">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-semibold text-gray-800">Crystal Pilsner</h4>
+<div class="stamp-effect px-2 py-1 bg-primary/10 rounded">
+<span class="text-xs text-primary font-bold">★★★★☆</span>
+</div>
+</div>
+<p class="text-sm text-gray-600 mb-2">Mountain Spring • Munich, DE</p>
+<p class="handwriting text-sm text-gray-700 italic">"Crisp and clean with subtle hop character. Perfect summer refreshment."</p>
+<div class="flex items-center justify-between mt-3">
+<span class="text-xs text-gray-500">Jun 15, 2025</span>
+<div class="flex space-x-2">
+<span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Pilsner</span>
+<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Travel</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 mt-8">
+<h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Stats</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white rounded-xl p-4 shadow-lg border border-amber-200">
+<div class="w-8 h-8 flex items-center justify-center mb-3">
+<i class="ri-trophy-line text-secondary text-xl"></i>
+</div>
+<div class="text-2xl font-bold text-gray-800 mb-1">12</div>
+<div class="text-sm text-gray-600">Achievements</div>
+</div>
+<div class="bg-white rounded-xl p-4 shadow-lg border border-amber-200">
+<div class="w-8 h-8 flex items-center justify-center mb-3">
+<i class="ri-map-pin-line text-secondary text-xl"></i>
+</div>
+<div class="text-2xl font-bold text-gray-800 mb-1">15</div>
+<div class="text-sm text-gray-600">Cities Visited</div>
+</div>
+<div class="bg-white rounded-xl p-4 shadow-lg border border-amber-200">
+<div class="w-8 h-8 flex items-center justify-center mb-3">
+<i class="ri-heart-line text-secondary text-xl"></i>
+</div>
+<div class="text-2xl font-bold text-gray-800 mb-1">IPA</div>
+<div class="text-sm text-gray-600">Favorite Style</div>
+</div>
+<div class="bg-white rounded-xl p-4 shadow-lg border border-amber-200">
+<div class="w-8 h-8 flex items-center justify-center mb-3">
+<i class="ri-calendar-line text-secondary text-xl"></i>
+</div>
+<div class="text-2xl font-bold text-gray-800 mb-1">3.2</div>
+<div class="text-sm text-gray-600">Avg per Week</div>
+</div>
+</div>
+</div>
+<div class="page-texture rounded-xl overflow-hidden shadow-lg border border-amber-200 mt-4">
+<div class="border-b border-amber-200 px-4 py-3 bg-amber-50/50">
+<div class="flex items-center justify-between">
+<div class="text-sm font-medium text-gray-600">June 2025</div>
+<div class="flex items-center space-x-2 text-xs text-gray-500">
+<span>Total: 12 Entries</span>
+</div>
+</div>
+</div>
+<div class="divide-y divide-amber-100">
+<div class="px-4 py-3 bg-white hover:bg-amber-50/30 transition-colors">
+<div class="flex items-start space-x-4">
+<img src="https://readdy.ai/api/search-image?query=belgian%20ale%20beer%20bottle%20rich%20amber%20color%20isolated%20on%20white%20background%20product%20photography%20style%20high%20quality%20detailed&width=80&height=80&seq=beer4&orientation=squarish"
+alt="Beer" class="w-16 h-16 rounded-lg object-cover">
+<div class="flex-1">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-semibold text-gray-800">Belgian Bliss</h4>
+<div class="stamp-effect px-2 py-1 bg-primary/10 rounded">
+<span class="text-xs text-primary font-bold">★★★★★</span>
+</div>
+</div>
+<p class="text-sm text-gray-600 mb-2">Abbey Brewing • Brussels, BE</p>
+<p class="handwriting text-sm text-gray-700 italic">"Complex fruity notes with a spicy finish. A true Belgian masterpiece!"</p>
+<div class="flex items-center justify-between mt-3">
+<span class="text-xs text-gray-500">Jun 28, 2025</span>
+<div class="flex space-x-2">
+<span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">Belgian</span>
+<span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">Special</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 py-3 bg-white hover:bg-amber-50/30 transition-colors">
+<div class="flex items-start space-x-4">
+<img src="https://readdy.ai/api/search-image?query=pilsner%20beer%20bottle%20crystal%20clear%20golden%20color%20isolated%20on%20white%20background%20product%20photography%20style%20high%20quality%20detailed&width=80&height=80&seq=beer5&orientation=squarish"
+alt="Beer" class="w-16 h-16 rounded-lg object-cover">
+<div class="flex-1">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-semibold text-gray-800">Crystal Pilsner</h4>
+<div class="stamp-effect px-2 py-1 bg-primary/10 rounded">
+<span class="text-xs text-primary font-bold">★★★★☆</span>
+</div>
+</div>
+<p class="text-sm text-gray-600 mb-2">Mountain Spring • Munich, DE</p>
+<p class="handwriting text-sm text-gray-700 italic">"Crisp and clean with subtle hop character. Perfect summer refreshment."</p>
+<div class="flex items-center justify-between mt-3">
+<span class="text-xs text-gray-500">Jun 15, 2025</span>
+<div class="flex space-x-2">
+<span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Pilsner</span>
+<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Travel</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="px-4 mt-8">
+<h3 class="text-lg font-semibold text-gray-800 mb-4">Memory Gallery</h3>
+<div class="grid grid-cols-2 gap-3">
+<img src="https://readdy.ai/api/search-image?query=craft%20beer%20tasting%20flight%20wooden%20board%20multiple%20beer%20glasses%20brewery%20atmosphere%20warm%20lighting%20cozy%20interior&width=180&height=120&seq=memory1&orientation=landscape"
+alt="Beer tasting" class="rounded-lg object-cover w-full h-24 shadow-md">
+<img src="https://readdy.ai/api/search-image?query=friends%20cheering%20with%20craft%20beer%20bottles%20outdoor%20patio%20sunset%20golden%20hour%20happy%20moments%20social%20gathering&width=180&height=120&seq=memory2&orientation=landscape"
+alt="Friends with beer" class="rounded-lg object-cover w-full h-24 shadow-md">
+<img src="https://readdy.ai/api/search-image?query=brewery%20tour%20industrial%20equipment%20copper%20tanks%20beer%20production%20behind%20the%20scenes%20educational%20experience&width=180&height=120&seq=memory3&orientation=landscape"
+alt="Brewery tour" class="rounded-lg object-cover w-full h-24 shadow-md">
+<img src="https://readdy.ai/api/search-image?query=craft%20beer%20festival%20outdoor%20event%20multiple%20booths%20tents%20people%20tasting%20beer%20sunny%20day%20community%20celebration&width=180&height=120&seq=memory4&orientation=landscape"
+alt="Beer festival" class="rounded-lg object-cover w-full h-24 shadow-md">
+</div>
+</div>
+</main>
+<div class="fixed bottom-0 w-full bg-white border-t border-amber-200 z-50">
+<div class="grid grid-cols-5 py-2">
+<button class="flex flex-col items-center justify-center py-2 text-primary cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center mb-1">
+<i class="ri-book-open-line text-xl"></i>
+</div>
+<span class="text-xs font-medium">Passbook</span>
+</button>
+<button class="flex flex-col items-center justify-center py-2 text-gray-500 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center mb-1">
+<i class="ri-add-circle-line text-xl"></i>
+</div>
+<span class="text-xs">Add Entry</span>
+</button>
+<button class="flex flex-col items-center justify-center py-2 text-gray-500 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center mb-1">
+<i class="ri-image-line text-xl"></i>
+</div>
+<span class="text-xs">Memories</span>
+</button>
+<a href="https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/57239c27-6154-41d7-a7ff-a43a6140ce45" data-readdy="true" class="flex flex-col items-center justify-center py-2 text-gray-500 no-underline">
+<div class="w-6 h-6 flex items-center justify-center mb-1">
+<i class="ri-user-line text-xl"></i>
+</div>
+<span class="text-xs">Profile</span>
+</a>
+<button class="flex flex-col items-center justify-center py-2 text-gray-500 cursor-pointer">
+<div class="w-6 h-6 flex items-center justify-center mb-1">
+<i class="ri-compass-line text-xl"></i>
+</div>
+<span class="text-xs">Discover</span>
+</button>
+</div>
+</div>
+<div class="fixed bottom-20 right-4 z-40">
+<button class="w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center cursor-pointer !rounded-button">
+<div class="w-6 h-6 flex items-center justify-center">
+<i class="ri-add-fill text-2xl"></i>
+</div>
+</button>
+</div>
+<script id="tab-navigation">
+document.addEventListener("DOMContentLoaded", function () {
+  const tabButtons = document.querySelectorAll("[data-tab]");
+  const tabContents = document.querySelectorAll("[data-tab-content]");
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const targetTab = this.getAttribute("data-tab");
+      tabButtons.forEach((btn) => {
+        btn.classList.remove("text-primary");
+        btn.classList.add("text-gray-500");
+      });
+      this.classList.remove("text-gray-500");
+      this.classList.add("text-primary");
+    });
+  });
+});
+</script>
+<script id="fab-interaction">
+document.addEventListener("DOMContentLoaded", function () {
+  const fabButton = document.querySelector(".fixed.bottom-20.right-4 button");
+  fabButton.addEventListener("click", function () {
+    this.style.transform = "scale(0.95)";
+    setTimeout(() => {
+      this.style.transform = "scale(1)";
+    }, 150);
+  });
+});
+</script>
+<script id="entry-interactions">
+document.addEventListener("DOMContentLoaded", function () {
+  const entryCards = document.querySelectorAll(".hover\\:bg-amber-50\\/30");
+  entryCards.forEach((card) => {
+    card.addEventListener("click", function () {
+      this.style.transform = "translateX(4px)";
+      this.style.transition = "transform 0.2s ease";
+      setTimeout(() => {
+        this.style.transform = "translateX(0)";
+      }, 200);
+    });
+  });
+  const filterButton =
+    document.querySelector(".ri-filter-3-line").parentElement;
+  filterButton.addEventListener("click", function () {
+    this.classList.toggle("text-primary");
+  });
+  const searchButton = document.querySelector(".ri-search-line").parentElement;
+  searchButton.addEventListener("click", function () {
+    this.classList.toggle("text-primary");
+  });
+});
+</script>
+<script id="memory-gallery">
+document.addEventListener("DOMContentLoaded", function () {
+  const memoryImages = document.querySelectorAll(".grid img");
+  memoryImages.forEach((img) => {
+    img.addEventListener("click", function () {
+      this.style.transform = "scale(1.05)";
+      this.style.transition = "transform 0.2s ease";
+      this.style.zIndex = "10";
+      setTimeout(() => {
+        this.style.transform = "scale(1)";
+        this.style.zIndex = "1";
+      }, 300);
+    });
+  });
+});
+</script>
+</body>
+</html>
