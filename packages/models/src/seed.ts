@@ -13,52 +13,52 @@ const schema = {
 const users = [
   {
     id: "sakataginga",
-    displayName: "坂田銀河",
+    nickname: "坂田銀河",
     watermark: 0,
   },
   {
     id: "mourikotarou",
-    displayName: "毛利浩太郎",
+    nickname: "毛利浩太郎",
     watermark: 50,
   },
   {
     id: "midorikawaken",
-    displayName: "緑川剣",
+    nickname: "緑川剣",
     watermark: 100,
   },
   {
     id: "nakaharatadaya",
-    displayName: "中原忠也",
+    nickname: "中原忠也",
     watermark: 50,
   },
   {
     id: "nikaidoyamato",
-    displayName: "二階堂大和",
+    nickname: "二階堂大和",
     watermark: 50,
   },
   {
     id: "natsumefukutarou",
-    displayName: "夏目福太郎",
+    nickname: "夏目福太郎",
     watermark: 50,
   },
   {
     id: "matsunokazuma",
-    displayName: "松野一馬",
+    nickname: "松野一馬",
     watermark: 50,
   },
   {
     id: "tobaminami",
-    displayName: "鳥羽美波",
+    nickname: "鳥羽美波",
     watermark: 50,
   },
   {
     id: "mizunoaoi",
-    displayName: "水野碧",
+    nickname: "水野碧",
     watermark: 50,
   },
   {
     id: "toudoena",
-    displayName: "藤堂恵那",
+    nickname: "藤堂恵那",
     watermark: 50,
   },
 ];
@@ -97,7 +97,7 @@ export async function main(db: ReturnType<typeof drizzle>) {
     checkinsTable: {
       count: 1000,
       columns: {
-        nickname: f.valuesFromArray({ values: beers }),
+        name: f.valuesFromArray({ values: beers }),
         date: f.date(),
         userId: f.valuesFromArray({ values: users.map((u) => u.id) }),
       },

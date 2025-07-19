@@ -43,7 +43,7 @@ export function init(client: AnyD1Database) {
         z.object({
           limit: z.number(),
           offset: z.number(),
-        }),
+        })
       )
       .query(withUserId<{ limit: number; offset: number }>(getCheckinList)),
     requestPrint: authedProcedure.mutation(withUserId(requestPrint)),
@@ -52,10 +52,11 @@ export function init(client: AnyD1Database) {
       .input(
         z.object({
           nickname: z.string(),
-        }),
+        })
       )
       .mutation(withUserId(setUserInfo)),
   });
 }
 
 export type AppRouter = ReturnType<typeof init>;
+export * from "./context";

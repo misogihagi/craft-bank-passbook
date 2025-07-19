@@ -3,6 +3,7 @@ import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 // untapped準拠
 export const checkinsTable = sqliteTable("checkins", {
   id: int().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
   date: text().notNull(),
   amount: int().notNull(),
   userId: text("user_id").references(() => usersTable.id),

@@ -8,9 +8,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "drizzle:generate": "drizzle-kit generate",
+    "drizzle:migrate": "drizzle-kit migrate",
+    "drizzle:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
+    "@repo/models": "workspace:*",
     "@repo/trpc": "workspace:*",
     "@repo/ui": "workspace:*",
     "@tailwindcss/postcss": "^4.1.11",
@@ -32,6 +36,7 @@
     "@types/react-dom": "19.1.1",
     "drizzle-kit": "^0.31.4",
     "eslint": "^9.31.0",
+    "tsx": "^4.20.3",
     "typescript": "5.8.2"
   }
 }
