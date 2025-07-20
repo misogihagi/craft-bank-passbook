@@ -164,8 +164,8 @@ export function usecases(client) {
     setUserInfo: (userId: string, info: { nickname: string }) =>
       setUserInfo(db, userId, info),
     requestPrint: (userId: string) => requestPrint(db, userId),
-    getJobCatalog: (id: string) => getJobCatalog(db),
+    getJobCatalog: () => getJobCatalog(db),
     getJobById: (jobId: number) => getJobById(db, jobId),
-    print: (jobId) => print(db, jobId),
+    print: (jobId: number) => print(db, jobId),
   };
 }

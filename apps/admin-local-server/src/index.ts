@@ -1,21 +1,13 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { initTRPC } from "@trpc/server";
 import { trpcServer } from "@hono/trpc-server";
-import { drizzle } from "drizzle-orm/better-sqlite3";
 import Database from "better-sqlite3";
-import { init, withMockContext } from "@repo/trpc";
-
-const mockUser = {
-  id: "sakataginga",
-  nickname: "坂田銀河",
-  watermark: 0,
-};
+import { initAdmin } from "@repo/trpc";
 
 const sqlite = new Database("../../db.sqlite3");
 
-const appRouter = init(sqlite);
+const appRouter = initAdmin(sqlite);
 
 const app = new Hono();
 
@@ -28,13 +20,6 @@ app.use(
   "/trpc/*",
   trpcServer({
     router: appRouter,
-    //    createContext: withMockContext(),
-    createContext: (_opts, c) => {
-      console.log("Context created:", c.req.header("authorization"));
-      if (c.req.header("authorization") === "anonymous") {
-        return {}; // Return null for anonymous requests
-      } else return { user: mockUser };
-    },
   })
 );
 
