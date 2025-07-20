@@ -1,3 +1,4 @@
+import { createTRPCContext } from "@trpc/tanstack-react-query";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { usecases } from "@repo/usecases";
@@ -60,4 +61,6 @@ export function init(client: AnyD1Database | BetterSQLite3Database) {
 }
 
 export type AppRouter = ReturnType<typeof init>;
-export * from "./context";
+
+export const { useTRPC, useTRPCClient } = createTRPCContext<AppRouter>();
+export const TRPCProvider = createTRPCContext<AppRouter>().TRPCProvider;

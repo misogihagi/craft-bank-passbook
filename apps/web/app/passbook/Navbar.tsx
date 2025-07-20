@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react";
+import Link from "next/link";
 
 const Navbar = () => {
   return (
@@ -36,19 +37,25 @@ const Navbar = () => {
           {/* `font-['Pacifico']`: 'Pacifico'フォントを適用 */}
           {/* `text-xl`: テキストサイズをxlに設定 */}
           {/* `text-primary`: プライマリカラーを適用 */}
-          <h1 className="font-['Pacifico'] text-xl text-primary">Craft Beer Passbook</h1>
+          <h1 className="font-['Pacifico'] text-xl text-primary">
+            Craft Beer Passbook
+          </h1>
         </div>
         {/* 右側のセクション（通知アイコン） */}
         {/* `w-8 h-8`: 幅と高さを8に設定 */}
         {/* `flex items-center justify-center`: アイコンを中央に配置 */}
         {/* `cursor-pointer`: カーソルをポインターに変更し、クリック可能であることを示す */}
-        <div className="w-8 h-8 flex items-center justify-center cursor-pointer">
-          {/* リミックスアイコン（通知アイコン） */}
-          {/* `ri-notification-2-line`: アイコンの種類 */}
-          {/* `text-gray-600`: グレーの色を適用 */}
-          {/* `text-xl`: テキストサイズをxlに設定 */}
-          <i className="ri-notification-2-line text-gray-600 text-xl"></i>
-        </div>
+        <Link
+          href="/passbook/user"
+          className="w-8 h-8 flex items-center justify-center cursor-pointer"
+        >
+          <div className="w-8 h-8 flex items-center justify-center cursor-pointer">
+            {/* リミックスアイコン（通知アイコン） */}
+            {/* `text-gray-600`: グレーの色を適用 */}
+            {/* `text-xl`: テキストサイズをxlに設定 */}
+            <i className="ri-id-card-line text-gray-600 text-xl"></i>
+          </div>
+        </Link>
       </div>
     </nav>
   );

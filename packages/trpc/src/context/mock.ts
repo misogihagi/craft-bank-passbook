@@ -5,9 +5,13 @@ type Request = {
 };
 
 export function withContext() {
-  async function createContext({ req }: { req: Request }) {
+  async function createContext({
+    req,
+  }: {
+    req: { headers: { authorization?: string } };
+  }) {
     if (!req.headers.authorization) return null;
-    return { id: "mock-user-id" }; // Mock user context
+    return { id: "mock-user-id" }; // Mock user contexte
   }
   return createContext;
 }

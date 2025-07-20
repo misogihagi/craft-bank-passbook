@@ -1,16 +1,14 @@
+"use client";
+import Link from "next/link";
 import React, { useState } from "react";
+import "../../globals.css";
 
 // プロフィールヘッダーコンポーネント
 const ProfileHeader = () => {
   return (
-    <header className="fixed top-0 w-full max-w-sm bg-white border-b border-gray-100 z-50">
+    <header className="fixed top-0 w-full max-w-sm border-b border-gray-100 z-50">
       <div className="flex items-center justify-between px-4 py-3">
-        <a
-          href="https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/57239c27-6154-41d7-a7ff-a43a6140ce45"
-          data-readdy="true"
-          className="w-8 h-8 flex items-center justify-center cursor-pointer"
-          aria-label="戻る"
-        >
+        <Link href="/passbook" className="flex items-center">
           {/* Lucide Reactのアイコンを使用する場合、別途インストールが必要です。ここではシンプルなSVGを使用します。 */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -26,7 +24,8 @@ const ProfileHeader = () => {
           >
             <path d="m15 18-6-6 6-6" />
           </svg>
-        </a>
+        </Link>
+        {/* タイトルと保存ボタン */}
         <h1 className="text-lg font-semibold text-gray-900">
           プロフィールを編集
         </h1>
@@ -52,7 +51,9 @@ const ProfileAvatarSection = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfileImage(reader.result);
+        if (reader.result && typeof reader.result === "string") {
+          setProfileImage(reader.result);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -93,20 +94,6 @@ const ProfileAvatarSection = () => {
           </svg>
         </button>
       </div>
-      <input
-        type="file"
-        id="photo-input"
-        accept="image/*"
-        className="hidden"
-        onChange={handleImageChange}
-      />
-      <button
-        id="change-photo-button"
-        className="text-blue-600 text-sm font-medium cursor-pointer" // Tailwindのprimaryをblue-600に仮定
-        onClick={() => document.getElementById("photo-input").click()}
-      >
-        写真を変更
-      </button>
     </section>
   );
 };
@@ -128,7 +115,7 @@ const ProfileForm = () => {
           htmlFor="full-name"
           className="block text-sm font-medium text-gray-900 mb-2"
         >
-          フルネーム
+          ニックネーム
         </label>
         <input
           type="text"
@@ -137,80 +124,6 @@ const ProfileForm = () => {
           onChange={(e) => setFullName(e.target.value)}
           className="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white" // Tailwindのprimaryをblue-600に仮定
         />
-      </div>
-
-      <div>
-        <label
-          htmlFor="username"
-          className="block text-sm font-medium text-gray-900 mb-2"
-        >
-          ユーザー名
-        </label>
-        <input
-          type="text"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white" // Tailwindのprimaryをblue-600に仮定
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="bio"
-          className="block text-sm font-medium text-gray-900 mb-2"
-        >
-          自己紹介
-        </label>
-        <textarea
-          id="bio"
-          rows="4"
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          className="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white resize-none" // Tailwindのprimaryをblue-600に仮定
-          placeholder="あなたのビールに関する旅について教えてください..."
-        ></textarea>
-      </div>
-
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-900 mb-2"
-        >
-          メールアドレス
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white" // Tailwindのprimaryをblue-600に仮定
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="location"
-          className="block text-sm font-medium text-gray-900 mb-2"
-        >
-          所在地
-        </label>
-        <input
-          type="text"
-          id="location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          className="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white" // Tailwindのprimaryをblue-600に仮定
-        />
-      </div>
-
-      <div className="bg-gray-50 rounded-lg p-4">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-900">
-            メンバー登録日
-          </span>
-          <span className="text-sm text-gray-600">2023年3月</span>
-        </div>
       </div>
     </form>
   );
@@ -295,13 +208,12 @@ const ActionButtons = () => {
       >
         変更を保存
       </button>
-      <a
-        href="https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/57239c27-6154-41d7-a7ff-a43a6140ce45"
-        data-readdy="true"
+      <Link
+        href="/passbook"
         className="block w-full text-center text-gray-600 py-3 cursor-pointer"
       >
         キャンセル
-      </a>
+      </Link>
     </div>
   );
 };
@@ -309,14 +221,11 @@ const ActionButtons = () => {
 // メインのAppコンポーネント
 const App = () => {
   return (
-    <div className="w-full max-w-sm mx-auto bg-white min-h-screen font-inter">
+    <div className="w-full max-w-sm mx-auto min-h-screen bg-amber-50 font-sans">
       {" "}
       {/* Tailwindのfont-interを仮定 */}
-      <ProfileHeader />
       <main className="pt-16 pb-8 px-4">
-        <ProfileAvatarSection />
         <ProfileForm />
-        <PrivacySettings />
         <ActionButtons />
       </main>
     </div>

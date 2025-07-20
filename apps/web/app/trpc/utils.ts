@@ -1,8 +1,19 @@
+/*
+import { createTRPCContext } from "@trpc/tanstack-react-query";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+
+import { init } from "@repo/trpc";
+
+
+*/
+import { createTRPCContext } from "@trpc/tanstack-react-query";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { usecases } from "@repo/usecases";
 import { type AnyD1Database } from "drizzle-orm/d1";
 import { type BetterSQLite3Database } from "drizzle-orm/better-sqlite3";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
 
 export const userSchema = z.object({
   id: z.string(),
@@ -59,5 +70,13 @@ export function init(client: AnyD1Database | BetterSQLite3Database) {
   });
 }
 
-export type AppRouter = ReturnType<typeof init>;
-export * from "./context";
+const sqlite = new Database("db.sqlite3");
+const db = drizzle({ client: sqlite });
+
+export const appRouter = init({
+  db,
+});
+export type AppRouter = typeof appRouter;
+
+export const { useTRPC, useTRPCClient } = createTRPCContext<AppRouter>();
+export const TRPCProvider = createTRPCContext<AppRouter>().TRPCProvider;
