@@ -6,7 +6,7 @@ type Request = {
 
 export function withContext() {
   async function createContext({ req }: { req: Request }) {
-    if (!req.headers.authorization) return null;
+    if (req.headers?.authorization == "anonymous") return null;
     return { id: "mock-user-id" }; // Mock user context
   }
   return createContext;

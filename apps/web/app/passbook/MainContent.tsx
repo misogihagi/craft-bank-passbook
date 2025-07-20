@@ -2,13 +2,14 @@
 import React, { useState } from "react";
 import {
   useQuery,
-  useMutation,
-  useQueryClient,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { TRPCProvider, type AppRouter } from "../trpc";
+import { TRPCProvider, useTRPC, type AppRouter } from "../trpc";
+import { Link } from "react-router";
+import type { UseQueryResult } from "@tanstack/react-query";
 
 const stastics = (
   <div className="px-4 mt-8">
@@ -174,8 +175,9 @@ const user = {
 const checkins = {
   count: 150,
 };
+export function MainContent<T, U>({ query }: { query: UseQueryResult<T, U> }) {
+  const data = React.use(query.promise);
 
-const MainContent = () => {
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [cardStyle, setCardStyle] = useState({
@@ -231,7 +233,7 @@ const MainContent = () => {
           {/* ウェルカムメッセージ */}
           <div className="text-white mb-4">
             <h2 className="text-2xl font-bold mb-2">
-              おかえりなさい!{user.nickname}さん
+              おかえりなさい!{data?.nickname || ""}さん
             </h2>
           </div>
           {/* ユニークビール収集数の統計カード */}
@@ -328,16 +330,35 @@ const MainContent = () => {
       </div>
     </main>
   );
-};
+}
+
+export function App() {
+  const trpc = useTRPC();
+  const userQuery = useQuery(trpc.getUserInfo.queryOptions());
+
+  return (
+    <>
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <MainContent query={userQuery} />
+      </React.Suspense>
+    </>
+  );
+}
 
 const MainContentWithQuery = () => {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        experimental_prefetchInRender: true,
+      },
+    },
+  });
 
   const [trpcClient] = useState(() =>
     createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: "/trpc",
+          url: "http://localhost:3000/trpc",
         }),
       ],
     })
@@ -346,10 +367,9 @@ const MainContentWithQuery = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-        <MainContent />
+        <App />
       </TRPCProvider>
     </QueryClientProvider>
   );
 };
-
 export default MainContentWithQuery;

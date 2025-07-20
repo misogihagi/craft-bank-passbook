@@ -1,33 +1,32 @@
+"use client";
 import React, { useState } from "react";
+import {
+  useQuery,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import { TRPCProvider, useTRPC, type AppRouter } from "../../trpc";
+import { Link, useNavigate } from "react-router";
+import type { UseQueryResult } from "@tanstack/react-query";
 
 // プロフィールフォームコンポーネント
-const ProfileForm = () => {
-  const [fullName, setFullName] = useState("Marcus Thompson");
-  const [username, setUsername] = useState("@marcus_hops");
+export function ProfileForm({
+  nickname,
+  setNickname,
+}: {
+  nickname: string;
+  setNickname: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const [bio, setBio] = useState(
     "Craft beer enthusiast exploring flavors from around the world. Always on the hunt for the perfect IPA and love discovering hidden gem breweries. Cheers to new adventures! 🍺"
   );
-  const [email, setEmail] = useState("marcus.thompson@email.com");
+  const [email, setEmail] = useState("ginga.sakata@email.com");
   const [location, setLocation] = useState("Portland, Oregon");
 
   return (
     <form className="space-y-6">
-      <div>
-        <label
-          htmlFor="full-name"
-          className="block text-sm font-medium text-gray-900 mb-2"
-        >
-          フルネーム
-        </label>
-        <input
-          type="text"
-          id="full-name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          className="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white" // Tailwindのprimaryをblue-600に仮定
-        />
-      </div>
-
       <div>
         <label
           htmlFor="username"
@@ -38,8 +37,8 @@ const ProfileForm = () => {
         <input
           type="text"
           id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
           className="w-full px-4 py-3 bg-gray-50 rounded-lg border-none text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white" // Tailwindのprimaryをblue-600に仮定
         />
       </div>
@@ -103,39 +102,96 @@ const ProfileForm = () => {
       </div>
     </form>
   );
-};
+}
 
 // アクションボタンコンポーネント
-const ActionButtons = () => {
+export function ActionButtons({
+  onSubmit,
+}: {
+  onSubmit: (e: React.FormEvent) => void;
+}) {
   return (
     <div className="mt-8 space-y-4">
       <button
         id="save-changes-button"
         className="w-full bg-blue-600 text-white py-3 rounded-full font-medium cursor-pointer" // Tailwindのprimaryをblue-600に仮定
+        onClick={onSubmit}
       >
         変更を保存
       </button>
-      <a
-        href="https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/57239c27-6154-41d7-a7ff-a43a6140ce45"
-        data-readdy="true"
+      <Link
+        to="/passbook"
         className="block w-full text-center text-gray-600 py-3 cursor-pointer"
       >
         キャンセル
-      </a>
+      </Link>
     </div>
   );
-};
+}
 
 // メインのAppコンポーネント
-const App = () => {
+export function Main<T, U>({ query }: { query: UseQueryResult<T, U> }) {
+  const data = React.use(query.promise);
+  const [nickname, setNickname] = useState(data?.nickname || "");
+  const trpc = useTRPC();
+  const userCreator = useMutation(trpc.setUserInfo.mutationOptions());
+  const navigate = useNavigate();
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    userCreator.mutate({ nickname });
+    navigate("/passbook"); // 保存後にパスブックページへリダイレクト
+  };
+
   return (
     <div className="w-full max-w-sm mx-auto bg-white min-h-screen font-inter">
       <main className="pt-16 pb-8 px-4">
-        <ProfileForm />
-        <ActionButtons />
+        <ProfileForm nickname={nickname} setNickname={setNickname} />
+        <ActionButtons onSubmit={onSubmit} />
       </main>
     </div>
   );
+}
+
+export function App() {
+  const trpc = useTRPC();
+  const userQuery = useQuery(trpc.getUserInfo.queryOptions());
+  const userCreator = useMutation(trpc.setUserInfo.mutationOptions());
+
+  return (
+    <>
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <Main query={userQuery} />
+      </React.Suspense>
+    </>
+  );
+}
+
+const AppWithQuery = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        experimental_prefetchInRender: true,
+      },
+    },
+  });
+
+  const [trpcClient] = useState(() =>
+    createTRPCClient<AppRouter>({
+      links: [
+        httpBatchLink({
+          url: "http://localhost:3000/trpc",
+        }),
+      ],
+    })
+  );
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+        <App />
+      </TRPCProvider>
+    </QueryClientProvider>
+  );
 };
 
-export default App;
+export default AppWithQuery;

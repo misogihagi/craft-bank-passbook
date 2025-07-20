@@ -9,12 +9,12 @@ import { err, ResultAsync, okAsync } from "neverthrow";
 
 function isPresent(
   db: BetterSQLite3Database<typeof schema>,
-  table: typeof usersTable | typeof jobsTable,
+  table: typeof usersTable | typeof jobsTable
 ): <T extends number | string>(id: T) => ResultAsync<boolean, Error> {
   return <T extends number | string>(id: T): ResultAsync<boolean, Error> => {
     return ResultAsync.fromPromise(
       db.select().from(table).where(eq(table.id, id)).limit(1),
-      (error) => error as Error, // Promiseがrejectされた場合にErrorオブジェクトに変換
+      (error) => error as Error // Promiseがrejectされた場合にErrorオブジェクトに変換
     ).andThen((result) => {
       // レコードが見つかればtrue、見つからなければfalse
       return okAsync(!!result);
@@ -25,42 +25,48 @@ function isPresent(
 function getCheckinList(
   db: BetterSQLite3Database<typeof schema>,
   userId: string,
-  { limit = 30, offset = 30 }: { limit: number; offset: number },
+  { limit = 30, offset = 30 }: { limit: number; offset: number }
 ) {
-  return db.query.checkinsTable.findMany({
-    where: eq(checkinsTable.userId, userId),
-    orderBy: desc(checkinsTable.date),
-    limit,
-    offset,
-  });
+  return db
+    .select({
+      name: checkinsTable.name,
+      date: checkinsTable.date,
+      amount: checkinsTable.amount,
+    })
+    .from(checkinsTable)
+    .where(eq(checkinsTable.userId, userId))
+    .orderBy(desc(checkinsTable.date))
+    .limit(limit)
+    .offset(offset);
 }
 
 export function getUserInfo(
   db: BetterSQLite3Database<typeof schema>,
-  userId: string,
+  userId: string
 ) {
   return db.query.usersTable.findFirst({
-    where: eq(checkinsTable.userId, userId),
+    where: eq(checkinsTable.id, userId),
     columns: {
       nickname: true,
     },
   });
 }
 
-export function setUserInfo(
+export async function setUserInfo(
   db: BetterSQLite3Database<typeof schema>,
   userId: string,
-  { nickname }: { nickname: string },
+  { nickname }: { nickname: string }
 ) {
-  return db
+  await db
     .update(usersTable)
     .set({ nickname })
     .where(eq(usersTable.id, userId));
+  return { nickname };
 }
 
 export async function requestPrint(
   db: BetterSQLite3Database<typeof schema>,
-  userId: string,
+  userId: string
 ) {
   // user id check
   const isUserPresent = isPresent(db, usersTable);
@@ -81,7 +87,7 @@ function getJobCatalog(db: BetterSQLite3Database<typeof schema>) {
 
 async function getJobById(
   db: BetterSQLite3Database<typeof schema>,
-  jobId: number,
+  jobId: number
 ) {
   // job id check
   const isJobPresent = isPresent(db, jobsTable);
@@ -152,7 +158,7 @@ export function usecases(client) {
   return {
     getCheckinList: (
       userId: string,
-      options: { limit: number; offset: number },
+      options: { limit: number; offset: number }
     ) => getCheckinList(db, userId, options),
     getUserInfo: (userId: string) => getUserInfo(db, userId),
     setUserInfo: (userId: string, info: { nickname: string }) =>
