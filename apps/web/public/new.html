@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Beer - Craft Beer Passbook</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#8B4513", secondary: "#D2691E" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :where([class^="ri-"])::before { content: "\f3c2"; }
+      .leather-texture {
+      background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #8B4513 100%);
+      position: relative;
+      }
+      .leather-texture::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="noise"><feTurbulence baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.1"/></svg>');
+      pointer-events: none;
+      }
+      .page-texture {
+      background: linear-gradient(135deg, #FFF8DC 0%, #F5F5DC 100%);
+      position: relative;
+      }
+      .page-texture::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="paper"><feTurbulence baseFrequency="0.04" numOctaves="3" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23paper)" opacity="0.05"/></svg>');
+      pointer-events: none;
+      }
+      .handwriting {
+      font-family: 'Courier New', monospace;
+      font-style: italic;
+      }
+      .stamp-effect {
+      border: 2px dashed #8B4513;
+      position: relative;
+      }
+      .stamp-effect::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border: 1px solid #8B4513;
+      border-radius: 4px;
+      }
+      .star-rating {
+      display: flex;
+      gap: 0.25rem;
+      }
+      .star {
+      color: #D1D5DB;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      font-size: 1.5rem;
+      }
+      .star.active {
+      color: #D2691E;
+      }
+      .star:hover {
+      color: #D2691E;
+      }
+      .photo-upload {
+      border: 2px dashed #D2691E;
+      background: linear-gradient(135deg, #FFF8DC 0%, #F5F5DC 100%);
+      transition: all 0.3s ease;
+      }
+      .photo-upload:hover {
+      border-color: #8B4513;
+      background: linear-gradient(135deg, #F5F5DC 0%, #DDBF94 100%);
+      }
+      .form-input {
+      border: 1px solid #E5E7EB;
+      background: white;
+      transition: all 0.2s ease;
+      }
+      .form-input:focus {
+      border-color: #D2691E;
+      box-shadow: 0 0 0 3px rgba(210, 105, 30, 0.1);
+      outline: none;
+      }
+      .tag-button {
+      transition: all 0.2s ease;
+      cursor: pointer;
+      }
+      .tag-button.selected {
+      background-color: #D2691E;
+      color: white;
+      }
+      .tag-button:hover {
+      background-color: #8B4513;
+      color: white;
+      }
+      input[type="file"] {
+      opacity: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      }
+    </style>
+  </head>
+  <body class="bg-amber-50 font-sans">
+    <nav
+      class="fixed top-0 w-full bg-white/90 backdrop-blur-sm border-b border-amber-200 z-50"
+    >
+      <div class="flex items-center justify-between px-4 py-3">
+        <a
+          href="https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/98894706-0797-435f-9d0a-7260cb1ada8b"
+          data-readdy="true"
+          class="w-8 h-8 flex items-center justify-center cursor-pointer no-underline"
+        >
+          <i class="ri-arrow-left-line text-gray-600 text-xl"></i>
+        </a>
+        <h1 class="text-lg font-semibold text-gray-800">Add New Beer</h1>
+        <button
+          id="save-button"
+          class="text-primary font-medium cursor-pointer !rounded-button"
+        >
+          Save
+        </button>
+      </div>
+    </nav>
+
+    <main class="pt-16 pb-24">
+      <div class="px-4 py-6">
+        <div
+          class="page-texture rounded-xl overflow-hidden shadow-lg border border-amber-200"
+        >
+          <div class="p-6">
+            <div
+              class="photo-upload rounded-xl h-48 flex flex-col items-center justify-center mb-6 relative overflow-hidden"
+            >
+              <input type="file" accept="image/*" id="photo-input" />
+              <div class="w-12 h-12 flex items-center justify-center mb-3">
+                <i class="ri-camera-line text-secondary text-3xl"></i>
+              </div>
+              <p class="text-gray-600 font-medium mb-1">Add Photo</p>
+              <p class="text-sm text-gray-500">
+                Tap to select from gallery or camera
+              </p>
+              <div id="photo-preview" class="absolute inset-0 hidden">
+                <img
+                  id="preview-image"
+                  src=""
+                  alt="Beer photo"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Beer Name *</label
+                >
+                <input
+                  type="text"
+                  id="beer-name"
+                  class="form-input w-full px-4 py-3 rounded-lg text-sm"
+                  placeholder="Enter beer name"
+                  required
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Brewery</label
+                >
+                <input
+                  type="text"
+                  id="brewery-name"
+                  class="form-input w-full px-4 py-3 rounded-lg text-sm"
+                  placeholder="Enter brewery name"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Location</label
+                >
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="location"
+                    class="form-input w-full px-4 py-3 pl-12 rounded-lg text-sm"
+                    placeholder="City, State/Country"
+                  />
+                  <div
+                    class="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center"
+                  >
+                    <i class="ri-map-pin-line text-gray-400"></i>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-3"
+                  >Rating</label
+                >
+                <div class="star-rating" id="star-rating">
+                  <span class="star" data-rating="1">★</span>
+                  <span class="star" data-rating="2">★</span>
+                  <span class="star" data-rating="3">★</span>
+                  <span class="star" data-rating="4">★</span>
+                  <span class="star" data-rating="5">★</span>
+                </div>
+                <input type="hidden" id="rating-value" value="0" />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Beer Style</label
+                >
+                <div class="relative">
+                  <button
+                    type="button"
+                    id="style-selector"
+                    class="form-input w-full px-4 py-3 rounded-lg text-sm text-left flex items-center justify-between cursor-pointer"
+                  >
+                    <span id="selected-style">Select beer style</span>
+                    <div class="w-4 h-4 flex items-center justify-center">
+                      <i class="ri-arrow-down-s-line text-gray-400"></i>
+                    </div>
+                  </button>
+                  <div
+                    id="style-dropdown"
+                    class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg mt-1 z-10 hidden"
+                  >
+                    <div class="py-2 max-h-48 overflow-y-auto">
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="IPA"
+                      >
+                        IPA
+                      </div>
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="Stout"
+                      >
+                        Stout
+                      </div>
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="Lager"
+                      >
+                        Lager
+                      </div>
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="Pilsner"
+                      >
+                        Pilsner
+                      </div>
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="Wheat Beer"
+                      >
+                        Wheat Beer
+                      </div>
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="Belgian Ale"
+                      >
+                        Belgian Ale
+                      </div>
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="Porter"
+                      >
+                        Porter
+                      </div>
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="Pale Ale"
+                      >
+                        Pale Ale
+                      </div>
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="Sour"
+                      >
+                        Sour
+                      </div>
+                      <div
+                        class="px-4 py-2 hover:bg-amber-50 cursor-pointer"
+                        data-style="Saison"
+                      >
+                        Saison
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Date</label
+                >
+                <input
+                  type="date"
+                  id="beer-date"
+                  class="form-input w-full px-4 py-3 rounded-lg text-sm"
+                  value=""
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-3"
+                  >Tags</label
+                >
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    class="tag-button px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    data-tag="IPA"
+                  >
+                    IPA
+                  </button>
+                  <button
+                    type="button"
+                    class="tag-button px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    data-tag="Stout"
+                  >
+                    Stout
+                  </button>
+                  <button
+                    type="button"
+                    class="tag-button px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    data-tag="Lager"
+                  >
+                    Lager
+                  </button>
+                  <button
+                    type="button"
+                    class="tag-button px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    data-tag="Friends"
+                  >
+                    Friends
+                  </button>
+                  <button
+                    type="button"
+                    class="tag-button px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    data-tag="Solo"
+                  >
+                    Solo
+                  </button>
+                  <button
+                    type="button"
+                    class="tag-button px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    data-tag="Travel"
+                  >
+                    Travel
+                  </button>
+                  <button
+                    type="button"
+                    class="tag-button px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    data-tag="Special"
+                  >
+                    Special
+                  </button>
+                  <button
+                    type="button"
+                    class="tag-button px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm"
+                    data-tag="Date Night"
+                  >
+                    Date Night
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Tasting Notes</label
+                >
+                <textarea
+                  id="tasting-notes"
+                  class="handwriting form-input w-full px-4 py-3 rounded-lg text-sm resize-none"
+                  rows="4"
+                  placeholder="Write your tasting experience... flavors, aromas, memories, who you shared it with..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div class="fixed bottom-0 w-full bg-white border-t border-amber-200 z-50">
+      <div class="flex px-4 py-4 space-x-4">
+        <a
+          href="https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/98894706-0797-435f-9d0a-7260cb1ada8b"
+          data-readdy="true"
+          class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-lg text-center font-medium cursor-pointer !rounded-button no-underline"
+        >
+          Cancel
+        </a>
+        <button
+          id="save-entry-button"
+          class="flex-1 bg-primary text-white py-3 rounded-lg text-center font-medium cursor-pointer !rounded-button"
+        >
+          Save Entry
+        </button>
+      </div>
+    </div>
+
+    <script id="photo-upload">
+      document.addEventListener("DOMContentLoaded", function () {
+        const photoInput = document.getElementById("photo-input");
+        const photoPreview = document.getElementById("photo-preview");
+        const previewImage = document.getElementById("preview-image");
+
+        photoInput.addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              previewImage.src = e.target.result;
+              photoPreview.classList.remove("hidden");
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      });
+    </script>
+
+    <script id="star-rating">
+      document.addEventListener("DOMContentLoaded", function () {
+        const stars = document.querySelectorAll(".star");
+        const ratingValue = document.getElementById("rating-value");
+
+        stars.forEach((star, index) => {
+          star.addEventListener("click", function () {
+            const rating = parseInt(this.getAttribute("data-rating"));
+            ratingValue.value = rating;
+            stars.forEach((s, i) => {
+              if (i < rating) {
+                s.classList.add("active");
+              } else {
+                s.classList.remove("active");
+              }
+            });
+          });
+
+          star.addEventListener("mouseenter", function () {
+            const rating = parseInt(this.getAttribute("data-rating"));
+            stars.forEach((s, i) => {
+              if (i < rating) {
+                s.style.color = "#D2691E";
+              } else {
+                s.style.color = "#D1D5DB";
+              }
+            });
+          });
+        });
+
+        document
+          .getElementById("star-rating")
+          .addEventListener("mouseleave", function () {
+            const currentRating = parseInt(ratingValue.value);
+            stars.forEach((s, i) => {
+              if (i < currentRating) {
+                s.style.color = "#D2691E";
+              } else {
+                s.style.color = "#D1D5DB";
+              }
+            });
+          });
+      });
+    </script>
+
+    <script id="style-selector">
+      document.addEventListener("DOMContentLoaded", function () {
+        const styleSelector = document.getElementById("style-selector");
+        const styleDropdown = document.getElementById("style-dropdown");
+        const selectedStyle = document.getElementById("selected-style");
+        const styleOptions = document.querySelectorAll("[data-style]");
+        styleSelector.addEventListener("click", function () {
+          styleDropdown.classList.toggle("hidden");
+        });
+
+        styleOptions.forEach((option) => {
+          option.addEventListener("click", function () {
+            const style = this.getAttribute("data-style");
+            selectedStyle.textContent = style;
+            styleDropdown.classList.add("hidden");
+          });
+        });
+
+        document.addEventListener("click", function (e) {
+          if (
+            !styleSelector.contains(e.target) &&
+            !styleDropdown.contains(e.target)
+          ) {
+            styleDropdown.classList.add("hidden");
+          }
+        });
+      });
+    </script>
+
+    <script id="tag-selection">
+      document.addEventListener("DOMContentLoaded", function () {
+        const tagButtons = document.querySelectorAll(".tag-button");
+
+        tagButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            this.classList.toggle("selected");
+          });
+        });
+      });
+    </script>
+
+    <script id="date-picker">
+      document.addEventListener("DOMContentLoaded", function () {
+        const dateInput = document.getElementById("beer-date");
+        const today = new Date();
+        const formattedDate =
+          today.getFullYear() +
+          "-" +
+          String(today.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(today.getDate()).padStart(2, "0");
+        dateInput.value = formattedDate;
+      });
+    </script>
+
+    <script id="form-validation">
+      document.addEventListener("DOMContentLoaded", function () {
+        const saveButton = document.getElementById("save-button");
+        const saveEntryButton = document.getElementById("save-entry-button");
+        const beerNameInput = document.getElementById("beer-name");
+        function validateForm() {
+          const beerName = beerNameInput.value.trim();
+          const isValid = beerName.length > 0;
+
+          if (isValid) {
+            saveButton.classList.remove("opacity-50");
+            saveEntryButton.classList.remove("opacity-50");
+            saveButton.disabled = false;
+            saveEntryButton.disabled = false;
+          } else {
+            saveButton.classList.add("opacity-50");
+            saveEntryButton.classList.add("opacity-50");
+            saveButton.disabled = true;
+            saveEntryButton.disabled = true;
+          }
+        }
+
+        beerNameInput.addEventListener("input", validateForm);
+        validateForm();
+
+        function saveEntry() {
+          if (beerNameInput.value.trim()) {
+            const formData = {
+              beerName: document.getElementById("beer-name").value,
+              brewery: document.getElementById("brewery-name").value,
+              location: document.getElementById("location").value,
+              rating: document.getElementById("rating-value").value,
+              style: document.getElementById("selected-style").textContent,
+              date: document.getElementById("beer-date").value,
+              notes: document.getElementById("tasting-notes").value,
+              tags: Array.from(document.querySelectorAll(".tag-button.selected")).map(
+                (btn) => btn.getAttribute("data-tag"),
+              ),
+            };
+
+            localStorage.setItem("newBeerEntry", JSON.stringify(formData));
+            window.location.href =
+              "https://readdy.ai/home/628d526b-798f-402d-9d1b-c9aa1a4fd8cc/98894706-0797-435f-9d0a-7260cb1ada8b";
+          }
+        }
+
+        saveButton.addEventListener("click", saveEntry);
+        saveEntryButton.addEventListener("click", saveEntry);
+      });
+    </script>
+
+    <script id="form-interactions">
+      document.addEventListener("DOMContentLoaded", function () {
+        const formInputs = document.querySelectorAll(".form-input");
+
+        formInputs.forEach((input) => {
+          input.addEventListener("focus", function () {
+            this.style.transform = "translateY(-2px)";
+            this.style.boxShadow = "0 4px 12px rgba(139, 69, 19, 0.1)";
+          });
+
+          input.addEventListener("blur", function () {
+            this.style.transform = "translateY(0)";
+            this.style.boxShadow = "";
+          });
+        });
+
+        const photoUpload = document.querySelector(".photo-upload");
+        photoUpload.addEventListener("dragover", function (e) {
+          e.preventDefault();
+          this.style.borderColor = "#8B4513";
+          this.style.background = "linear-gradient(135deg, #F5F5DC 0%, #DDBF94 100%)";
+        });
+
+        photoUpload.addEventListener("dragleave", function (e) {
+          e.preventDefault();
+          this.style.borderColor = "#D2691E";
+          this.style.background = "linear-gradient(135deg, #FFF8DC 0%, #F5F5DC 100%)";
+        });
+
+        photoUpload.addEventListener("drop", function (e) {
+          e.preventDefault();
+          const files = e.dataTransfer.files;
+          if (files.length > 0) {
+            const photoInput = document.getElementById("photo-input");
+            photoInput.files = files;
+            photoInput.dispatchEvent(new Event("change"));
+          }
+          this.style.borderColor = "#D2691E";
+          this.style.background = "linear-gradient(135deg, #FFF8DC 0%, #F5F5DC 100%)";
+        });
+      });
+    </script>
+  </body>
+</html>
