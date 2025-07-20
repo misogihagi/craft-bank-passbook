@@ -51,7 +51,7 @@ const stastics = (
   </div>
 );
 
-const beerLogs = [
+const beerLogsss = [
   {
     month: "July 2025",
     totalEntries: 8,
@@ -175,8 +175,70 @@ const user = {
 const checkins = {
   count: 150,
 };
-export function MainContent<T, U>({ query }: { query: UseQueryResult<T, U> }) {
-  const data = React.use(query.promise);
+export function MainContent<T, U>({
+  userQuery,
+  checkinQuery,
+}: {
+  userQuery: UseQueryResult<T, U>;
+  checkinQuery: UseQueryResult<T, U>;
+}) {
+  const userData = React.use(userQuery.promise);
+  const chekinData = React.use(checkinQuery.promise);
+
+  type Response = {
+    amount: number;
+    date: string;
+    image: string;
+    location: string;
+    name: string;
+    note: string;
+  }[];
+
+  function convertFlatBeerEntriesToGroupedLogs(flatEntries) {
+    const beerLogs = [];
+    const monthlyMap = new Map(); // Helps in grouping by month
+
+    flatEntries.forEach((entry, index) => {
+      const entryDate = new Date(entry.date);
+      const monthYear = entryDate.toLocaleString();
+
+      if (!monthlyMap.has(monthYear)) {
+        monthlyMap.set(monthYear, {
+          month: monthYear,
+          totalEntries: 0,
+          entries: [],
+        });
+      }
+
+      const currentMonthGroup = monthlyMap.get(monthYear);
+
+      const newEntry = {
+        id: index + 1,
+        image: entry.image,
+        name: entry.name,
+        brewery: entry.brewery,
+        location: entry.location,
+        note: entry.note,
+        date: entryDate.toLocaleDateString(),
+        amount: String(entry.amount),
+      };
+
+      currentMonthGroup.entries.push(newEntry);
+      currentMonthGroup.totalEntries++;
+    });
+
+    monthlyMap.forEach((value) => beerLogs.push(value));
+
+    beerLogs.sort((a, b) => {
+      const dateA = new Date(a.entries[0].date).getTime();
+      const dateB = new Date(b.entries[0].date).getTime();
+      return dateB - dateA; // Sort in descending order (most recent month first)
+    });
+
+    return beerLogs;
+  }
+
+  const beerLogs = convertFlatBeerEntriesToGroupedLogs(chekinData);
 
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [isSearchActive, setIsSearchActive] = useState(false);
@@ -233,7 +295,7 @@ export function MainContent<T, U>({ query }: { query: UseQueryResult<T, U> }) {
           {/* ウェルカムメッセージ */}
           <div className="text-white mb-4">
             <h2 className="text-2xl font-bold mb-2">
-              おかえりなさい!{data?.nickname || ""}さん
+              おかえりなさい!{userData?.nickname || ""}さん
             </h2>
           </div>
           {/* ユニークビール収集数の統計カード */}
@@ -296,8 +358,8 @@ export function MainContent<T, U>({ query }: { query: UseQueryResult<T, U> }) {
                 >
                   <div className="flex items-start space-x-4">
                     <img
-                      src={entry.imgSrc}
-                      alt={entry.alt}
+                      src={entry.image}
+                      alt={entry.name}
                       className="w-16 h-16 rounded-lg object-cover"
                     />
                     <div className="flex-1">
@@ -335,11 +397,14 @@ export function MainContent<T, U>({ query }: { query: UseQueryResult<T, U> }) {
 export function App() {
   const trpc = useTRPC();
   const userQuery = useQuery(trpc.getUserInfo.queryOptions());
+  const checkinQuery = useQuery(
+    trpc.getCheckinList.queryOptions({ limit: 100, offset: 0 })
+  );
 
   return (
     <>
       <React.Suspense fallback={<div>Loading...</div>}>
-        <MainContent query={userQuery} />
+        <MainContent userQuery={userQuery} checkinQuery={checkinQuery} />
       </React.Suspense>
     </>
   );

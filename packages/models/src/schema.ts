@@ -7,6 +7,12 @@ export const checkinsTable = sqliteTable("checkins", {
   name: text().notNull(),
   date: text().notNull(),
   amount: int().notNull(),
+
+  image: text(),
+  brewery: text(),
+  location: text(),
+  note: text(),
+
   userId: text("user_id").references(() => usersTable.id),
 });
 

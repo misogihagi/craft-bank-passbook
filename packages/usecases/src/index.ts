@@ -33,6 +33,10 @@ function getCheckinList(
       name: checkinsTable.name,
       date: checkinsTable.date,
       amount: checkinsTable.amount,
+      image: checkinsTable.image,
+      brewery: checkinsTable.brewery,
+      location: checkinsTable.location,
+      note: checkinsTable.note,
     })
     .from(checkinsTable)
     .where(eq(checkinsTable.userId, userId))
