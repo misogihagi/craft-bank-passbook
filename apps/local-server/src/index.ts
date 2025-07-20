@@ -6,7 +6,6 @@ import { trpcServer } from "@hono/trpc-server";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import Database from "better-sqlite3";
 import { init, withMockContext } from "@repo/trpc";
-import { z } from "zod";
 
 const mockUser = {
   id: "sakataginga",
@@ -14,7 +13,7 @@ const mockUser = {
   watermark: 0,
 };
 
-const sqlite = new Database("db.sqlite3");
+const sqlite = new Database("../../db.sqlite3");
 
 const appRouter = init(sqlite);
 
