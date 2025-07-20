@@ -6,6 +6,7 @@ import {
 import * as schema from "@repo/models";
 import { checkinsTable, jobsTable, usersTable } from "@repo/models";
 import { err, ResultAsync, okAsync } from "neverthrow";
+import { id } from "zod/locales";
 
 function isPresent(
   db: BetterSQLite3Database<typeof schema>,
@@ -80,9 +81,20 @@ export async function requestPrint(
 
 function getJobCatalog(db: BetterSQLite3Database<typeof schema>) {
   return db
-    .select({ nickname: usersTable.nickname, date: jobsTable.date })
+    .select({
+      id: jobsTable.id,
+      nickname: usersTable.nickname,
+      date: jobsTable.date,
+      status: jobsTable.status,
+      count: count(checkinsTable.id),
+    })
     .from(jobsTable)
-    .leftJoin(usersTable, eq(usersTable.id, jobsTable.userId));
+    .leftJoin(usersTable, eq(usersTable.id, jobsTable.userId))
+    .leftJoin(checkinsTable, eq(checkinsTable.userId, usersTable.id))
+    .groupBy(
+      sql`${usersTable.nickname}, ${jobsTable.date}, ${jobsTable.status}`
+    )
+    .orderBy(desc(jobsTable.date));
 }
 
 async function getJobById(

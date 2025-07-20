@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,14 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -32,14 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Clock,
-  FileText,
-  MoreHorizontal,
-  Printer,
-  Search,
-  X,
-} from "lucide-react";
+import { Clock, FileText, MoreHorizontal, Printer, X } from "lucide-react";
 import {
   useQuery,
   useMutation,
@@ -49,126 +33,35 @@ import {
 import type { UseQueryResult } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { TRPCProvider, useTRPC, type AppRouter } from "../lib/trpc";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 interface PrintJob {
-  id: string;
-  user: {
-    name: string;
-    email: string;
-    avatar?: string;
-  };
-  document: string;
+  id: number;
+  nickname: string;
   pages: number;
-  copies: number;
-  status: "queued" | "printing" | "paused" | "completed" | "error";
-  submittedAt: Date;
-  estimatedCompletion: Date;
-  priority: "low" | "normal" | "high";
+  date: Date;
+  status: "Printing" | "Paused" | "Queued";
+  count: number;
 }
-
-const mockJobs: PrintJob[] = [
-  {
-    id: "1",
-    user: {
-      name: "Sarah Chen",
-      email: "sarah.chen@company.com",
-      avatar: "/placeholder.svg?height=32&width=32",
-    },
-    document: "Q4_Financial_Report.pdf",
-    pages: 45,
-    copies: 3,
-    status: "printing",
-    submittedAt: new Date(Date.now() - 5 * 60 * 1000),
-    estimatedCompletion: new Date(Date.now() + 8 * 60 * 1000),
-    priority: "high",
-  },
-  {
-    id: "2",
-    user: { name: "Mike Johnson", email: "mike.j@company.com" },
-    document: "Marketing_Presentation.pptx",
-    pages: 24,
-    copies: 10,
-    status: "queued",
-    submittedAt: new Date(Date.now() - 3 * 60 * 1000),
-    estimatedCompletion: new Date(Date.now() + 15 * 60 * 1000),
-    priority: "normal",
-  },
-  {
-    id: "3",
-    user: {
-      name: "Emily Rodriguez",
-      email: "e.rodriguez@company.com",
-      avatar: "/placeholder.svg?height=32&width=32",
-    },
-    document: "Employee_Handbook_v2.docx",
-    pages: 78,
-    copies: 1,
-    status: "queued",
-    submittedAt: new Date(Date.now() - 2 * 60 * 1000),
-    estimatedCompletion: new Date(Date.now() + 25 * 60 * 1000),
-    priority: "low",
-  },
-  {
-    id: "4",
-    user: { name: "David Park", email: "david.park@company.com" },
-    document: "Contract_Amendment.pdf",
-    pages: 12,
-    copies: 2,
-    status: "paused",
-    submittedAt: new Date(Date.now() - 10 * 60 * 1000),
-    estimatedCompletion: new Date(Date.now() + 5 * 60 * 1000),
-    priority: "high",
-  },
-  {
-    id: "5",
-    user: {
-      name: "Lisa Wang",
-      email: "lisa.wang@company.com",
-      avatar: "/placeholder.svg?height=32&width=32",
-    },
-    document: "Training_Materials.pdf",
-    pages: 156,
-    copies: 5,
-    status: "queued",
-    submittedAt: new Date(Date.now() - 1 * 60 * 1000),
-    estimatedCompletion: new Date(Date.now() + 45 * 60 * 1000),
-    priority: "normal",
-  },
-];
 
 function getStatusColor(status: PrintJob["status"]) {
   switch (status) {
-    case "printing":
+    case "Printing":
       return "bg-blue-100 text-blue-800 border-blue-200";
-    case "queued":
+    case "Queued":
       return "bg-yellow-100 text-yellow-800 border-yellow-200";
-    case "paused":
+    case "Paused":
       return "bg-orange-100 text-orange-800 border-orange-200";
-    case "completed":
-      return "bg-green-100 text-green-800 border-green-200";
-    case "error":
-      return "bg-red-100 text-red-800 border-red-200";
-    default:
-      return "bg-gray-100 text-gray-800 border-gray-200";
-  }
-}
-
-function getPriorityColor(priority: PrintJob["priority"]) {
-  switch (priority) {
-    case "high":
-      return "bg-red-100 text-red-800 border-red-200";
-    case "normal":
-      return "bg-blue-100 text-blue-800 border-blue-200";
-    case "low":
-      return "bg-gray-100 text-gray-800 border-gray-200";
     default:
       return "bg-gray-100 text-gray-800 border-gray-200";
   }
 }
 
 function formatTime(date: Date) {
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 function getTimeAgo(date: Date) {
@@ -178,45 +71,36 @@ function getTimeAgo(date: Date) {
   return `${minutes} mins ago`;
 }
 
-export function Component() {
+export function Component({
+  jobs,
+  mutate,
+}: {
+  jobs: PrintJob[];
+  mutate: (i: number) => void;
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [jobs, setJobs] = useState(mockJobs);
 
   const filteredJobs = jobs.filter((job) => {
-    const matchesSearch =
-      job.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      job.document.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = job.nickname
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || job.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
   const queueStats = {
     total: jobs.length,
-    printing: jobs.filter((j) => j.status === "printing").length,
-    queued: jobs.filter((j) => j.status === "queued").length,
-    paused: jobs.filter((j) => j.status === "paused").length,
+    printing: jobs.filter((j) => j.status === "Printing").length,
+    queued: jobs.filter((j) => j.status === "Queued").length,
+    paused: jobs.filter((j) => j.status === "Paused").length,
   };
 
-  const handleCancelJob = (jobId: string) => {
-    setJobs(jobs.filter((job) => job.id !== jobId));
-  };
+  const handleCancelJob = (jobId: string) => {};
 
-  const handlePauseJob = (jobId: string) => {
-    setJobs(
-      jobs.map((job) =>
-        job.id === jobId ? { ...job, status: "paused" as const } : job
-      )
-    );
-  };
+  const handlePauseJob = (jobId: string) => {};
 
-  const handleResumeJob = (jobId: string) => {
-    setJobs(
-      jobs.map((job) =>
-        job.id === jobId ? { ...job, status: "queued" as const } : job
-      )
-    );
-  };
+  const handleResumeJob = (jobId: string) => {};
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -284,32 +168,6 @@ export function Component() {
         </Card>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            placeholder="Search by user or document name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Filter by status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="printing">Printing</SelectItem>
-            <SelectItem value="queued">Queued</SelectItem>
-            <SelectItem value="paused">Paused</SelectItem>
-            <SelectItem value="completed">Completed</SelectItem>
-            <SelectItem value="error">Error</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
       {/* Print Queue Table */}
       <Card>
         <CardHeader>
@@ -323,12 +181,9 @@ export function Component() {
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
-                <TableHead>Document</TableHead>
                 <TableHead>Pages/Copies</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Priority</TableHead>
                 <TableHead>Submitted</TableHead>
-                <TableHead>Est. Completion</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -337,38 +192,15 @@ export function Component() {
                 <TableRow key={job.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage
-                          src={job.user.avatar || "/placeholder.svg"}
-                          alt={job.user.name}
-                        />
-                        <AvatarFallback>
-                          {job.user.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
                       <div>
-                        <div className="font-medium">{job.user.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {job.user.email}
-                        </div>
+                        <div className="font-medium">{job.nickname}</div>
                       </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium">{job.document}</span>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
                       <div>{job.pages} pages</div>
-                      <div className="text-muted-foreground">
-                        {job.copies} {job.copies === 1 ? "copy" : "copies"}
-                      </div>
+                      <div className="text-muted-foreground">{job.count}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -380,30 +212,8 @@ export function Component() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={getPriorityColor(job.priority)}
-                    >
-                      {job.priority.charAt(0).toUpperCase() +
-                        job.priority.slice(1)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
                     <div className="text-sm">
-                      <div>{formatTime(job.submittedAt)}</div>
-                      <div className="text-muted-foreground">
-                        {getTimeAgo(job.submittedAt)}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm">
-                      <div>{formatTime(job.estimatedCompletion)}</div>
-                      <div className="text-muted-foreground">
-                        {job.status === "printing"
-                          ? "In progress"
-                          : "Estimated"}
-                      </div>
+                      <div>{formatTime(job.date)}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -415,26 +225,12 @@ export function Component() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        {job.status === "paused" ? (
-                          <DropdownMenuItem
-                            onClick={() => handleResumeJob(job.id)}
-                          >
-                            Resume Job
-                          </DropdownMenuItem>
-                        ) : job.status === "queued" ? (
-                          <DropdownMenuItem
-                            onClick={() => handlePauseJob(job.id)}
-                          >
-                            Pause Job
-                          </DropdownMenuItem>
-                        ) : null}
-                        <DropdownMenuItem>Move to Top</DropdownMenuItem>
                         <DropdownMenuItem>View Details</DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-red-600"
-                          onClick={() => handleCancelJob(job.id)}
+                          onClick={() => mutate(job.id)}
                         >
-                          Cancel Job
+                          Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -476,22 +272,28 @@ export function ActionButtons({
 
 // メインのAppコンポーネント
 export function Main<T, U>({ query }: { query: UseQueryResult<T, U> }) {
-  const data = React.use(query.promise);
-  //  const { nickname, date } = data
-  console.log(data);
+  const data = React.use(query.promise) as {
+    id: number;
+    nickname: string;
+    pages: number;
+    date: string;
+    status: "Printing" | "Paused" | "Queued";
+    count: number;
+  }[];
+
+  const service = (jobs: typeof data): PrintJob[] => {
+    return jobs.map((job) => ({
+      ...job,
+      date: new Date(job.date),
+    }));
+  };
 
   const trpc = useTRPC();
-  const userCreator = useMutation(trpc.setUserInfo.mutationOptions());
-  const navigate = useNavigate();
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    userCreator.mutate({ nickname });
-    navigate("/passbook"); // 保存後にパスブックページへリダイレクト
-  };
+  const printCreator = useMutation(trpc.print.mutationOptions());
 
   return (
     <>
-      <Component />
+      <Component jobs={service(data)} mutate={printCreator.mutate} />
     </>
   );
 }
@@ -499,6 +301,7 @@ export function Main<T, U>({ query }: { query: UseQueryResult<T, U> }) {
 export function App() {
   const trpc = useTRPC();
   const jobCatalogQuery = useQuery(trpc.getJobCatalog.queryOptions());
+  const getJobByIdQuery = useQuery(trpc.getJobById.queryOptions(1));
   const printCreator = useMutation(trpc.print.mutationOptions());
 
   return (

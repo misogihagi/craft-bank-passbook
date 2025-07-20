@@ -91,6 +91,8 @@ const beers = [
   "アイスラガー",
 ];
 
+const images = ["Weizen", "Weizenbock", "Berliner Weisse", "Wit", "Pale Ale"];
+
 export async function main(db: ReturnType<typeof drizzle>) {
   await db.insert(usersTable).values(users).execute();
   await seed(db, schema).refine((f) => ({
@@ -104,10 +106,13 @@ export async function main(db: ReturnType<typeof drizzle>) {
     },
     usersTable: { count: 0.1 },
     jobsTable: {
-      count: 1,
+      count: 10,
       columns: {
         date: f.date(),
         userId: f.valuesFromArray({ values: users.map((u) => u.id) }),
+        status: f.valuesFromArray({
+          values: ["Printing", "Queued", "Paused"],
+        }),
       },
     },
   }));
