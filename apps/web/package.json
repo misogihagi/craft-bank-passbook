@@ -1,5 +1,6 @@
 {
   "name": "web",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,13 +12,23 @@
   "dependencies": {
     "@react-router/node": "^7.7.0",
     "@react-router/serve": "^7.7.0",
+    "@repo/models": "workspace:*",
+    "@repo/trpc": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "@tanstack/react-query": "^5.83.0",
+    "@trpc/client": "^11.4.3",
+    "@trpc/server": "^11.4.3",
+    "@trpc/tanstack-react-query": "^11.4.3",
     "isbot": "^5.1.27",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router": "^7.7.0"
+    "react-router": "^7.7.0",
+    "remixicon": "^4.6.0"
   },
   "devDependencies": {
     "@react-router/dev": "^7.7.0",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@tailwindcss/vite": "^4.1.4",
     "@types/node": "^20",
     "@types/react": "^19.1.2",
