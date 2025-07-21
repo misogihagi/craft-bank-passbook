@@ -1,0 +1,50 @@
+/* public/print.css */
+
+@media print {
+  @page {
+    size: 125mm 176mm; /* B6サイズ */
+    margin: 10mm;     /* 余白を設定 (任意) */
+  }
+
+  /* 通帳コンポーネントのラッパー要素 */
+  .account-book-container {
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* 以下の要素を印刷時に非表示にする */
+  .account-book-container h2, /* 口座名タイトル */
+  .account-book-container p,  /* 現在の残高の段落 */
+  .account-book-container h3  /* 取引履歴のタイトル */
+  {
+    display: none !important;
+  }
+
+  /* テーブルの罫線と調整は残す */
+  .account-book-container table {
+    width: 100% !important;
+    margin-top: 5px !important;
+  }
+
+  .account-book-container th,
+  .account-book-container td {
+    border: 1px solid black !important;
+    padding: 3px !important;
+    font-size: 0.8em !important;
+  }
+
+  /* 画面表示用の中央揃えを印刷時に無効化する */
+  body > div:first-child {
+    display: block !important;
+    min-height: auto !important;
+    background-color: transparent !important;
+  }
+
+  /* その他の調整 */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+}
