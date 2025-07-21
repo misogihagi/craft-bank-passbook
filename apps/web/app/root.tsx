@@ -6,6 +6,10 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import React, { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import { TRPCProvider, type AppRouter } from "./trpc";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -24,6 +28,23 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        experimental_prefetchInRender: true,
+      },
+    },
+  });
+  const [trpcClient] = useState(() =>
+    createTRPCClient<AppRouter>({
+      links: [
+        httpBatchLink({
+          url: "http://localhost:3001/trpc",
+        }),
+      ],
+    })
+  );
+
   return (
     <html lang="en">
       <head>
@@ -33,7 +54,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <QueryClientProvider client={queryClient}>
+          <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+            {children}
+          </TRPCProvider>
+        </QueryClientProvider>
         <ScrollRestoration />
         <Scripts />
       </body>

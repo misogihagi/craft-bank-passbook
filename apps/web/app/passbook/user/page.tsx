@@ -1,13 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import {
-  useQuery,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { TRPCProvider, useTRPC, type AppRouter } from "../../trpc";
+import { useTRPC } from "../../trpc";
 import { Link, useNavigate } from "react-router";
 import type { UseQueryResult } from "@tanstack/react-query";
 
@@ -155,7 +150,6 @@ export function Main<T, U>({ query }: { query: UseQueryResult<T, U> }) {
 export function App() {
   const trpc = useTRPC();
   const userQuery = useQuery(trpc.getUserInfo.queryOptions());
-  const userCreator = useMutation(trpc.setUserInfo.mutationOptions());
 
   return (
     <>
@@ -166,32 +160,4 @@ export function App() {
   );
 }
 
-const AppWithQuery = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        experimental_prefetchInRender: true,
-      },
-    },
-  });
-
-  const [trpcClient] = useState(() =>
-    createTRPCClient<AppRouter>({
-      links: [
-        httpBatchLink({
-          url: "http://localhost:3001/trpc",
-        }),
-      ],
-    })
-  );
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-        <App />
-      </TRPCProvider>
-    </QueryClientProvider>
-  );
-};
-
-export default AppWithQuery;
+export default App;

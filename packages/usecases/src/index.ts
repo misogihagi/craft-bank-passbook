@@ -45,6 +45,40 @@ function getCheckinList(
     .offset(offset);
 }
 
+function insertCheckin(
+  db: BetterSQLite3Database<typeof schema>,
+  userId: string,
+  {
+    name,
+    date,
+    amount,
+    image,
+    brewery,
+    location,
+    note,
+  }: {
+    name: string;
+    date: string;
+    amount: number;
+    image?: string;
+    brewery?: string;
+    location?: string;
+    note?: string;
+  }
+) {
+  console.log();
+  return db.insert(checkinsTable).values({
+    name,
+    date,
+    amount,
+    image,
+    brewery,
+    location,
+    note,
+    userId,
+  });
+}
+
 export function getUserInfo(
   db: BetterSQLite3Database<typeof schema>,
   userId: string
@@ -176,6 +210,10 @@ export function usecases(client) {
       userId: string,
       options: { limit: number; offset: number }
     ) => getCheckinList(db, userId, options),
+    insertCheckin: (
+      userId: string,
+      info: Parameters<typeof insertCheckin>[2]
+    ) => insertCheckin(db, userId, info),
     getUserInfo: (userId: string) => getUserInfo(db, userId),
     setUserInfo: (userId: string, info: { nickname: string }) =>
       setUserInfo(db, userId, info),

@@ -34,8 +34,13 @@ function withUserId<T>(fn: CallableFunction) {
 }
 
 export function init(client: AnyD1Database) {
-  const { getCheckinList, requestPrint, getUserInfo, setUserInfo } =
-    usecases(client);
+  const {
+    getCheckinList,
+    insertCheckin,
+    requestPrint,
+    getUserInfo,
+    setUserInfo,
+  } = usecases(client);
 
   return t.router({
     getCheckinList: authedProcedure
@@ -46,6 +51,20 @@ export function init(client: AnyD1Database) {
         })
       )
       .query(withUserId<{ limit: number; offset: number }>(getCheckinList)),
+    insertCheckin: authedProcedure
+      .input(
+        z.object({
+          name: z.string(),
+          date: z.string(),
+          amount: z.number(),
+          image: z.string().optional(),
+          brewery: z.string().optional(),
+          location: z.string().optional(),
+          note: z.string().optional(),
+        })
+      )
+      .mutation(withUserId(insertCheckin)),
+
     requestPrint: authedProcedure.mutation(withUserId(requestPrint)),
     getUserInfo: authedProcedure.query(withUserId(getUserInfo)),
     setUserInfo: authedProcedure

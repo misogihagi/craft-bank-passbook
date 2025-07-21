@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-const FloatingActionButton = () => {
+const FloatingActionButton = ({ onclick }: { onclick: CallableFunction }) => {
   const [buttonStyle, setButtonStyle] = useState({
     transform: "scale(1)",
   });
@@ -10,6 +10,7 @@ const FloatingActionButton = () => {
     setButtonStyle({
       transform: "scale(1.05)",
     });
+    onclick();
     setTimeout(() => {
       setButtonStyle({
         transform: "scale(1)",
