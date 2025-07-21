@@ -32,7 +32,12 @@ import {
 } from "@tanstack/react-query";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { TRPCProvider, useTRPC, type AppRouter } from "../lib/trpc";
+import {
+  TRPCProvider,
+  useTRPC,
+  useTRPCClient,
+  type AppRouter,
+} from "../lib/trpc";
 import { Link } from "react-router";
 
 interface PrintJob {
@@ -101,6 +106,18 @@ export function Component({
   const handlePauseJob = (jobId: string) => {};
 
   const handleResumeJob = (jobId: string) => {};
+  const client = useTRPCClient();
+
+  const openDocument = async (jobId: number) => {
+    const data = await client.getJobById.query(jobId);
+    if (data.error) return;
+    const document = data.checkins.map((c) => ({
+      data: c.date,
+      name: c.name,
+      amount: c.amount,
+    }));
+    window.localStorage.data=btoa(encodeURIComponent(JSON.stringify(document)));
+  };
 
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -181,7 +198,7 @@ export function Component({
             <TableHeader>
               <TableRow>
                 <TableHead>User</TableHead>
-                <TableHead>Pages/Copies</TableHead>
+                <TableHead>Records</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Submitted</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
@@ -199,7 +216,7 @@ export function Component({
                   </TableCell>
                   <TableCell>
                     <div className="text-sm">
-                      <div>{job.pages} pages</div>
+                      <div>{job.pages} records</div>
                       <div className="text-muted-foreground">{job.count}</div>
                     </div>
                   </TableCell>
@@ -221,11 +238,13 @@ export function Component({
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                           <MoreHorizontal className="w-4 h-4" />
-                          <span className="sr-only">Open menu</span>
+                          <span className="sr-only">Print</span>
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>View Details</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openDocument(job.id)}>
+                          Print
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-red-600"
                           onClick={() => mutate(job.id)}
